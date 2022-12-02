@@ -36,11 +36,19 @@ pgClient.on("connect", (client) => {
 */
 
 
+
 app.get('/', (req, res) => res.send('Home!'));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`👂 app listening on port ${port}!`));
 
 
+// import { deletePostgresItem, getPostgresDbItem, createPostgresDbItem, updatePostgresItem  } from "./postgresdb-item";
+// const parser = json();
+// app.get('/postgres-item/:id', parser, getPostgresDbItem);
+// app.get('/postgres-item', parser, getPostgresDbItem);
+// app.post('/postgres-item', parser, createPostgresDbItem);
+// app.put('/postgres-item/:id', parser, updatePostgresItem);
+// app.delete('/postgres-item/:id', parser, deletePostgresItem);
 
 
 /*
