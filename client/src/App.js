@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Test from './components/Test'
+import TestDB from './components/TestDB'
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       <header className="App-header">
         <button><a href='https://www.google.com/'>google</a></button>
         <Test/>
+        <br/>
+        <TestDB/>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.

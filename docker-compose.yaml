@@ -5,7 +5,23 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - config/.env
+      
+  pg-admin:
+    image: dpage/pgadmin4:6
+    ports:
+      - "5050:5050"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@email.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_PORT=5050
   
   nginx:
     restart: always
@@ -34,3 +50,6 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
+
+volumes:
+  data:

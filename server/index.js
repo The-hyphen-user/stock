@@ -18,6 +18,12 @@ app.get('/api/test', (req, res) => {
   res.send('hello world');
 });
 
+const { getPostgresDbItem } = require('./DB/postgres');
+app.get('/api/db', (req, res) => {
+  getPostgresDbItem(req, res);
+});
+
+
 //postgress client setup:
 /*
 const { Client } = require('pg');

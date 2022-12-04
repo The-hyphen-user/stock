@@ -1,14 +1,13 @@
 import React, {useState} from 'react'
 import axios from 'axios'
 
-const Test = () => {
-
+const TestDB = () => {
   const [response, setResponse] = useState('nothing yet')
 
   const serverURL = 'http://localhost:5000'
 
   const handleClick = () => {
-    axios.get(`${serverURL}/api/test`)
+    axios.get(`${serverURL}/api/db`)
     .then(res => {
       console.log(res.data)
       setResponse(res.data)
@@ -25,4 +24,4 @@ const Test = () => {
   )
 }
 
-export default Test
+export default TestDB
