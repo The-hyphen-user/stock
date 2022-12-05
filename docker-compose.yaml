@@ -1,55 +1,117 @@
-version: '3'
-services:
-  postgres:
-    image: postgres:9.6
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-    volumes:
-      - data:/var/lib/postgresql/data
-      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
-    env_file:
-      - config/.env
+# version: '3'
+# services:
+#   postgres:
+#     image: postgres:9.6
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=postgres
+#       - POSTGRES_DB=postgres
+#     volumes:
+#       - data:/var/lib/postgresql/data
+#       - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+#     env_file:
+#       - config/.env
       
-  pg-admin:
-    image: dpage/pgadmin4:6
-    ports:
-      - "5050:5050"
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@email.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-      - PGADMIN_LISTEN_PORT=5050
+#   pg-admin:
+#     image: dpage/pgadmin4:6
+#     ports:
+#       - "5050:5050"
+#     environment:
+#       - PGADMIN_DEFAULT_EMAIL=admin@email.com
+#       - PGADMIN_DEFAULT_PASSWORD=admin
+#       - PGADMIN_LISTEN_PORT=5050
   
-  nginx:
-    restart: always
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
-    ports:
-      - '3050:80'
+#   nginx:
+#     restart: always
+#     build:
+#       dockerfile: Dockerfile.dev
+#       context: ./nginx
+#     ports:
+#       - '3050:80'
       
-  api:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    restart: always
+#   api:
+#     build:
+#       context: ./server
+#       dockerfile: Dockerfile.dev
+#     restart: always
+#     ports:
+#       - 5000:5000
+#     volumes:
+#       - /server:/server
+#       - /server/node_modules  
+      
+#   client:
+#     build:
+#       context: ./client
+#       dockerfile: Dockerfile.dev
+#     restart: always
+#     volumes:
+#       - /app/node_modules
+#       - ./client:/app
+
+# volumes:
+#   data:
+
+
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
-      - 5000:5000
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
     volumes:
-      - /server:/server
-      - /server/node_modules  
-      
+      - db:/var/lib/mysql
+    networks:
+      - backend
+  
+  server:
+    depends_on:
+      - mysqldb
+    # build:
+    #   context: ./server
+    #   dockerfile: Dockerfile.dev
+    build: ./server
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    environment:
+      - DB_HOST=mysqldb
+      - DB_USER=$MYSQLDB_USER
+      - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - DB_NAME=$MYSQLDB_DATABASE
+      - DB_PORT=$MYSQLDB_DOCKER_PORT
+      - CLIENT_ORIGIN=$CLIENT_ORIGIN
+    networks:
+      - backend
+      - frontend
+
   client:
+    depends_on:
+      - server
+    # build:
+    #   context: ./client
+    #   dockerfile: Dockerfile.dev
     build:
       context: ./client
-      dockerfile: Dockerfile.dev
-    restart: always
-    volumes:
-      - /app/node_modules
-      - ./client:/app
+      args:
+        - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
+    ports:
+      - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
+    networks:
+      - frontend  
 
-volumes:
-  data:
+volumes: 
+  db:
+
+networks:
+  backend:
+  frontend:

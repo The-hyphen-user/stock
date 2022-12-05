@@ -4,10 +4,10 @@ import axios from 'axios'
 const TestDB = () => {
   const [response, setResponse] = useState('nothing yet')
 
-  const serverURL = 'http://localhost:5000'
+  const serverURL = 'http://localhost:6868'
 
   const handleClick = () => {
-    axios.get(`${serverURL}/api/db`)
+    axios.get(`${serverURL}/a`)
     .then(res => {
       console.log(res.data)
       setResponse(res.data)
@@ -16,7 +16,7 @@ const TestDB = () => {
     
   return (
     <div>
-      <button onClick={handleClick}>get responce</button>
+      <button onClick={handleClick}>synce</button>
 
       <p>{response}</p>
 

@@ -5,7 +5,7 @@ const Test = () => {
 
   const [response, setResponse] = useState('nothing yet')
 
-  const serverURL = 'http://localhost:5000'
+  const serverURL = 'http://localhost:6868'
 
   const handleClick = () => {
     axios.get(`${serverURL}/api/test`)

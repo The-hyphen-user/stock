@@ -1,12 +1,16 @@
 //basic express server
-const keys = require('./config/keys');
+// const keys = require('./config/keys');
 const express = require('express');
 const app = express();
-const port = 5000;
+
+const cors = require("cors");
 
 //cors allowed for localhost 3000
-const cors = require('cors');
-app.use(cors(origin = 'http://localhost:3000'));
+var corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || "http://localhost:8081"
+};
+
+app.use(cors(corsOptions));
 
 
 
@@ -18,35 +22,42 @@ app.get('/api/test', (req, res) => {
   res.send('hello world');
 });
 
-const { getPostgresDbItem } = require('./DB/postgres');
-app.get('/api/db', (req, res) => {
-  getPostgresDbItem(req, res);
-});
+// const { getPostgresDbItem } = require('./DB/postgres');
+// app.get('/api/db', (req, res) => {
+//   getPostgresDbItem(req, res);
+// });
 
 
-//postgress client setup:
-/*
-const { Client } = require('pg');
-const client = new Client({
-  user: keys.user,
-  host: keys.host,
-  database: keys.database,
-  password: keys.password,
-  port: keys.port,
-});
-pgClient.on("connect", (client) => {
-  client
-    .query("CREATE TABLE IF NOT EXISTS values (number INT)")
-    .catch((err) => console.error(err));
-});
-*/
+//mysql connection
+// const { db } = require('./DB/MySQLDB');
+// db.connect((err) => {
+//   if (err) {
+//     console.log('error connecting to mysql db');
+//     throw err;
+//   }
+//   console.log('mysql connected');
+// });
+
+const db = require("./models");
 
 
 
 app.get('/', (req, res) => res.send('Home!'));
 
-app.listen(port, () => console.log(`👂 app listening on port ${port}!`));
+app.get('/a', (req, res) => {
+console.log('hit a');
+  db.sequelize.sync().then(() => {
+    console.log('sync db');
+  })
+  res.send('synced db');
+});
 
+
+
+const PORT = process.env.NODE_DOCKER_PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
 
 // import { deletePostgresItem, getPostgresDbItem, createPostgresDbItem, updatePostgresItem  } from "./postgresdb-item";
 // const parser = json();
@@ -74,4 +85,21 @@ pgClient.on("connect", (client) => {
     .catch((err) => console.error(err));
 });
 
+*/
+
+//postgress client setup:
+/*
+const { Client } = require('pg');
+const client = new Client({
+  user: keys.user,
+  host: keys.host,
+  database: keys.database,
+  password: keys.password,
+  port: keys.port,
+});
+pgClient.on("connect", (client) => {
+  client
+    .query("CREATE TABLE IF NOT EXISTS values (number INT)")
+    .catch((err) => console.error(err));
+});
 */
