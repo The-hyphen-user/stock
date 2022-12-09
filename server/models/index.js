@@ -52,3 +52,11 @@ db.Holding.hasMany(db.Transaction, {foreignKey: 'holdingId'});
 // db.Stock.hasMany(db.Transaction);
 
 module.exports = db;
+
+/*
+stock
+Holding
+transaction
+watchlist
+user
+*/

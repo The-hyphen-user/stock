@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 
 const cors = require("cors");
+const routes = require("./routes");
 
 //cors allowed for localhost 3000
 var corsOptions = {
@@ -16,6 +17,8 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(routes);
 
 app.get('/api/test', (req, res) => {
   console.log('test route hit');
@@ -103,3 +106,7 @@ pgClient.on("connect", (client) => {
     .catch((err) => console.error(err));
 });
 */
+
+
+
+

@@ -8,9 +8,6 @@ module.exports  =  (sequelize, Sequelize) => {
       time: {
         type: Sequelize.DATE
       },
-      price: {
-        type: Sequelize.FLOAT
-      },
       quantity: {
         type: Sequelize.INTEGER
       }
