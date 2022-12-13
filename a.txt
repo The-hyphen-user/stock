@@ -1,0 +1,107 @@
+
+routes
+api:
+
+  user:
+    create:
+      path: /user/register
+      method: POST
+      req: 
+        - username
+        - password
+      res:
+       - success/fail
+    login:
+      path: /user/login
+      method: POST
+      req:
+        - username
+        - password
+      res:
+        - authToken
+    logout:
+      path: /user/logout
+      method: POST
+      req:
+        - authToken
+      res:
+        - success/fail
+  
+  stock:
+    get:
+      path: /stock/:ticker
+      method: GET
+      res:
+        - stock
+    search:
+      path: /stock/search/:query/:quantity to return(max50)
+      method: GET
+      res:
+        - stocks
+  
+  holding:
+    get:
+      path: /holding
+      method: GET
+      req:
+        - authToken
+      res:
+        - holdings
+  
+  transaction:
+    get:
+      path: /transaction
+      method: GET
+      req:
+        - authToken
+      res:
+        - transactions
+    buy:
+      path: /transaction/buy/:ticker/:quantity
+      method: POST
+      req:
+        - authToken
+      res:
+        - success/fail
+    sell:
+      path: /transaction/sell/:ticker/:quantity
+      method: POST
+      req:
+        - authToken
+      res:
+        - success/fail
+    
+  watchlist:
+    get:
+      path: /watchlist
+      method: GET
+      req:
+        - authToken
+      res:
+        - watchlist
+    add:
+      path: /watchlist/add/:ticker
+      method: POST
+      req:
+        - authToken
+      res:
+        - success/fail
+    remove:
+      path: /watchlist/remove/:ticker
+      method: POST
+      req:
+        - authToken
+      res:
+        - success/fail
+    
+    
+
+
+implement later
+  user:
+    - delete user
+  stock:
+    - create stock
+    - update stock
+    - delete stock
+  

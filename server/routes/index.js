@@ -1,14 +1,21 @@
 const express = require("express");
 const router = express.Router();
+const userRoutes = require("./user.routes");
+const stockRoutes = require("./stock.routes");
+// const holdingsRoutes = require('./holdings.routes');
+// const transactionRoutes = require('./transaction.routes');
+// const watchlistRoutes = require('./watchlist.routes');
 
-module.exports = () => {
-  app.use("/api/user", require("./user.routes")(router));
-  app.use("/api/transaction", require("./transaction.routes")(router));
-  app.use("/api/watchlist", require("./watchlist.routes")(router));
-  app.use("/api/stock", require("./stock.routes")(router));
-  app.use("/api/holding", require("./stock.routes")(router));
+router.use("/user", userRoutes);
+router.use("/stock", stockRoutes);
+// router.use('/holdings', holdingsRoutes);
+// router.use('/transaction', transactionRoutes);
+// router.use('/watchlist', watchlistRoutes);
 
-  app.use((req, res, next) => {
-    res.status(404).send("404 Not Found");
-  });
-};
+router.use((req, res) => {
+  console.log("hit /api 404");
+  console.log("route hit was: ", req.url);
+  res.status(404).send("404 not found");
+});
+
+module.exports = router;

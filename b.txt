@@ -1,0 +1,26 @@
+all routes in one list
+/api/user/register
+/api/user/login
+/api/user/logout
+/api/stock/:ticker
+/api/stock/serch/:query
+/api/holding
+/api/transaction
+/api/transaction/buy/:ticker/:quantity
+/api/transaction/sell/:ticker/:quantity
+/api/watchlist
+/api/watchlist/add/:ticker
+/api/watchlist/remove/:ticker
+
+
+
+
+all routes for later implementation
+/api/user/delete
+/api/user/update
+/api/stock/add
+/api/stock/update
+/api/stock/delete
+/api/transaction/update
+/api/transaction/delete
+/api/watchlist/update

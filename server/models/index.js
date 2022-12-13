@@ -26,8 +26,8 @@ db.sequelize = sequelize;
 db.User = require("./user.model.js")(sequelize, Sequelize);
 db.Holding = require("./holding.model.js")(sequelize, Sequelize);
 db.Watchlist = require("./watchlist.model.js")(sequelize, Sequelize);
-db.Stock = require("./stock.model.js")(sequelize, Sequelize);
 db.Transaction = require("./transaction.model.js")(sequelize, Sequelize);
+db.Stock = require("./stock.model.js")(sequelize, Sequelize);
 // db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 // db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 // db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
@@ -38,25 +38,17 @@ db.User.hasMany(db.Holding);
 db.User.hasMany(db.Watchlist);
 db.User.hasMany(db.Transaction);
 
-db.Holding.hasOne(db.Stock, {foreignKey: 'ticker'});
-db.Watchlist.hasOne(db.Stock, {foreignKey: 'ticker'});
-db.Transaction.hasOne(db.Stock, {foreignKey: 'ticker'});
-db.Holding.hasMany(db.Transaction, {foreignKey: 'holdingId'});
+// db.Holding.hasOne(db.Stock);
+// // db.Holding.hasMany(db.Transaction, {foreignKey: 'id'});
+// db.Watchlist.hasOne(db.Stock, {foreignKey: 'stockId'});
+// db.Transaction.hasOne(db.Stock, {foreignKey: 'symbol'});
 
 
 // db.Transaction.belongsTo(db.Holding, {foreignKey: 'holdingId'});
 // db.Holding.hasOne(db.Transaction, {foreignKey: 'holdingId'});
-// db.Watchlist.hasOne(db.Stock, {foreignKey: 'ticker'});
+// db.Watchlist.hasOne(db.Stock, {foreignKey: 'symbol'});
 // db.Stock.hasMany(db.Holding);
 // db.Stock.hasMany(db.Watchlist);
 // db.Stock.hasMany(db.Transaction);
 
 module.exports = db;
-
-/*
-stock
-Holding
-transaction
-watchlist
-user
-*/

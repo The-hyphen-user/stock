@@ -1,7 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
   const Stock = sequelize.define("stock", {
-    ticker: {
-      type: Sequelize.STRING
+    symbol: {
+      type: Sequelize.STRING,
+      primaryKey: true,
+      allowNull: false
     },
     name: {
       type: Sequelize.STRING
@@ -9,11 +11,3 @@ module.exports = (sequelize, Sequelize) => {
   });
   return Stock;
 };
-
-/*
-stock
-Holding
-transaction
-watchlist
-user
-*/

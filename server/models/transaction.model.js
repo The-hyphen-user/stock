@@ -6,10 +6,16 @@ module.exports = (sequelize, Sequelize) => {
     autoIncrement: true
   },
   time: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    allowNull: false
   },
   price: {
-    type: Sequelize.FLOAT
+    type: Sequelize.FLOAT,
+    allowNull: false
+  },
+  symbol: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
   });
   return Transaction;

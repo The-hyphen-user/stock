@@ -1,10 +1,16 @@
 const controller = {};
 
+
+
 controller.User = require("./user.controller.js");
-controller.Holding = require("./holding.controller.js");
-controller.Watchlist = require("./watchlist.controller.js");
+// controller.Holding = require("./holding.controller.js");
+// controller.Watchlist = require("./watchlist.controller.js");
 controller.Stock = require("./stock.controller.js");
-controller.Transaction = require("./transaction.controller.js");
+// controller.Transaction = require("./transaction.controller.js");
+
+
+
+
 
 module.exports = controller;
 
@@ -20,8 +26,10 @@ stock:
     - search for many (name)
     - delete one (symbol)
 holding:
-    - create (username, symbol, quantity)
     - find all (username)
+    - find one (username, symbol)
+    - create (username, symbol, quantity)
+    - update (username, symbol, quantity)   
     - delete one (symbol, username)
     - delete all (username)
 watchlist:
@@ -34,6 +42,8 @@ transaction:
     - find all (username)
     - delete one (id)
     - delete all (username)
+    
+
 
 
 

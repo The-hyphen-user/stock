@@ -1,0 +1,27 @@
+front end:
+
+/ 
+  home page
+/signup
+  signup page
+/login
+  login page
+/profile
+  profile page
+    menu
+      holding
+      transactions
+      watchlist
+      settings
+      logout
+/holding
+  holding page
+/transaction
+  transactions page
+/watchlist
+  watchlist page
+/settings
+  settings page
+/logout
+  logout page
+

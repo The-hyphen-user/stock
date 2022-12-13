@@ -1,11 +1,11 @@
 
-    const controllers = require("../controllers");
-    const { Transaction } = require("../middleware");
+//     const controllers = require("../controllers");
+//     const { Transaction } = require("../middleware");
 
 
-module.exports = (Transaction) => {
+// module.exports = (Transaction) => {
     
-    router.post("/create", controllers.Transaction.create);
+//     router.post("/create", controllers.Transaction.create);
 
-    Transaction.use(router);
-    }
+//     Transaction.use(router);
+//     }

@@ -41,12 +41,14 @@ exports.UserAuth = (req, res, next) => {
     };
 };
 
-exports.UserActiveAuth = (req, res, next) => {
+exports.UserActiveAuth = (req, res, next) => {//come up with a better name for this
   // check if user is the same as the one in the token
+  const JWTSecretKey = process.env.SECRET_JWT || "asdasdasdasdasdqwsdas";
+  
   const username = req.body.username;
   const email = req.body.email;
   const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, "secretkeyappearshere");
+  const decodedToken = jwt.verify(token, JWTSecretKey);
   const tokenUsername = decodedToken.username;
   const tokenEmail = decodedToken.email;
 

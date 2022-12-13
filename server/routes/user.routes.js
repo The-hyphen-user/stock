@@ -1,11 +1,19 @@
+//basic user routes for register, login, logout
+
+const express = require("express");
+const router = express.Router();
+
 const controllers = require("../controllers");
-const { UserAuth, UserActiveAuth } = require("../middleware");
-const router = require("express").Router();
+const userController = controllers.User;
 
-module.exports = (User) => {
-  router.post("/register", UserAuth, UserActiveAuth, controllers.User.create);
-  router.post("/login", UserAuth, controllers.User.login);
-  
+router.post("/register", userController.register);
+router.post("/login", userController.login);
+router.post("/logout", userController.logout);
 
-  User.use(router);
-};
+router.use((req, res) => {
+  console.log("hit /api/user 404");
+  console.log("route hit was: ", req.url);
+  res.status(404).send("404 not found");
+});
+
+module.exports = router;
