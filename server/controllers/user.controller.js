@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
 const JWTSecret = process.env.JWT_SECRET || "secret";
+const { hashPassword } = require("../util/password");
+const { authLogin, authUser } = require("../util/passport");
 
 exports.register = (req, res) => {
   // Validate request
@@ -16,9 +18,7 @@ exports.register = (req, res) => {
     return;
   }
 
-  const saltRounds = 10;
-  const salt = bcrypt.genSaltSync(saltRounds);
-  const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+  const hashedPassword = hashPassword(req.body.password);
   const user = {
     username: req.body.username,
     password: hashedPassword,
@@ -27,8 +27,11 @@ exports.register = (req, res) => {
 
   // Save user in the database
   User.create(user)
-    .then((data) => {
-      res.send(data);
+    .then(() => {
+      console.log("user created");
+      res.status(200).send({
+        message: "User created successfully",
+      });
     })
     .catch((err) => {
       res.status(500).send({
@@ -38,7 +41,7 @@ exports.register = (req, res) => {
     });
 };
 
-exports.login = (req, res) => {
+exports.login = (req, res) => {//deprecated
   console.log("hit login");
   //validate
   if (!req.body.username || !req.body.password) {
@@ -92,7 +95,7 @@ exports.login = (req, res) => {
     });
 };
 
-exports.logout = (req, res) => {//implement with sessions
+exports.logout = (req, res) => {//deprecated
   res.status(200).send({ message: "User logged out" });
 };
 

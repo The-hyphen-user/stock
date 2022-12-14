@@ -6,9 +6,14 @@ const router = express.Router();
 const controllers = require("../controllers");
 const userController = controllers.User;
 
+const { authLogin, authLogout } = require("../util/passport");
+
 router.post("/register", userController.register);
-router.post("/login", userController.login);
-router.post("/logout", userController.logout);
+router.post(
+  "/login",
+  authLogin
+);
+router.post("/logout", authLogout);
 
 router.use((req, res) => {
   console.log("hit /api/user 404");
