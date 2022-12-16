@@ -13,6 +13,10 @@ module.exports  =  (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       unique: true,
       allowNull: false
+    },
+    userId: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     }
   });
   return  Holding;

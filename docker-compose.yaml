@@ -67,8 +67,6 @@ services:
       # - MYSQL_DATABASE=mysqldb
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
-    volumes:
-      - db:/var/lib/mysql
     ports:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
   
@@ -102,6 +100,7 @@ services:
       # - DB_PORT=3306
       - JWT_SECRET=$JWT_SECRET
       - FINNHUB_API_KEY=$FINNHUB_API_KEY
+      - CLIENT_ORIGIN=$CLIENT_ORIGIN
       
   client:
     build: ./client

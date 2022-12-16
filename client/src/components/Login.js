@@ -1,35 +1,70 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { TextField, Button } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    axios
-      .post("/user/login", {
-          username: username,
-          password: password,
+  const URL = '127.0.0.1:8000'
+  let navigate = useNavigate();
+
+    const [username, setUsername] = useState('username1')
+    const [password, setPassword] = useState('password1')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+      //http://127.0.0.1:8000/api/token/
+      axios.post(`/user/login`, {
+        username: username,
+        password: password
       })
-      .then(function (response) {
-        console.log(response);
+      .then(res => {
+        console.log(res)
+        console.log(res.data)
       })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+      // .then(res => {
+      //   //set bearer token
+      //   localStorage.setItem('token', res.data.access)
+      // })
+      .then(() => {
+        navigate("/user", { replace: true })})
+    }
 
   return (
     <div>
-    <h3>Login</h3>
-      <h3>username</h3>
-      <input onChange={(e) => setUsername(e.target.value)}/>
-      <h3>password</h3>
-      <input onChange={(e) => setPassword(e.target.value)}/>
-      <button onClick={onSubmit}>Submit</button>
-    </div>
-  );
-};
+    <p>Login</p>
+      <div className="login-container">
+        <TextField
+          label="username"
+          variant="outlined"
+          onChange={(e) => setUsername(e.target.value)}
+          value={username}
+        />
+        <br />
+        <br />
+        <TextField
+          id="outlined-password-input"
+          label="Password"
+          variant="outlined"
+          autoComplete="current-password"
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+        />
+        <br />
+        <br />
+        <Button onClick={handleSubmit} variant="contained">
+          Log In
+        </Button>
 
-export default Login;
+      </div>
+
+
+
+    </div>
+  )
+}
+
+export default Login

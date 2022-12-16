@@ -8,6 +8,7 @@ dotenv.config();
 const JWTSecret = process.env.JWT_SECRET || "secret";
 const { hashPassword } = require("../util/password");
 const { authLogin, authUser } = require("../util/passport");
+const { createDecipheriv } = require("crypto");
 
 exports.register = (req, res) => {
   // Validate request
@@ -17,6 +18,7 @@ exports.register = (req, res) => {
     });
     return;
   }
+  console.log("valid request");
 
   const hashedPassword = hashPassword(req.body.password);
   const user = {
@@ -29,8 +31,9 @@ exports.register = (req, res) => {
   User.create(user)
     .then(() => {
       console.log("user created");
+      //send a http 201 status code with message user created
       res.status(200).send({
-        message: "User created successfully",
+        message: "User created",
       });
     })
     .catch((err) => {

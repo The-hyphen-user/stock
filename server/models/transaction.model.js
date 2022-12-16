@@ -16,6 +16,10 @@ module.exports = (sequelize, Sequelize) => {
   symbol: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false
   }
   });
   return Transaction;

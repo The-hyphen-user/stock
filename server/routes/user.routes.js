@@ -5,15 +5,50 @@ const router = express.Router();
 
 const controllers = require("../controllers");
 const userController = controllers.User;
+const passport = require("passport");
 
 const { authLogin, authLogout } = require("../util/passport");
+const db = require("../models");
+const User = db.User;
+const Holding = db.Holding;
+const Transaction = db.Transaction;
+const Watchlist = db.Watchlist;
 
 router.post("/register", userController.register);
 router.post(
   "/login",
-  authLogin
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    const username = req.body.username;
+    console.log("✨req: ", req.body.username);
+    User.findOne({ where: { username: username } })
+      .then((user) => {
+        const id = user.id;
+        const transactions = Transaction.findAll({ where: { userId: id } });
+        const holdings = Holding.findAll({ where: { userId: id } });
+        const watchlists = Watchlist.findAll({ where: { userId: id } });
+        return Promise.all([transactions, holdings, watchlists]);
+      })
+      .then((data) => {
+        const [transactions, holdings, watchlists] = data;
+        const payload = {
+          transactions: transactions,
+          holdings: holdings,
+          watchlists: watchlists,
+        };
+        console.log("✨data: ", payload);
+        res.send(payload);
+      });
+  }
 );
 router.post("/logout", authLogout);
+
+//get username based on cookie/token/session
+router.get("/", (req, res) => {
+  console.log("--✨User: ", req.user);
+});
 
 router.use((req, res) => {
   console.log("hit /api/user 404");

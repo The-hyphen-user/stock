@@ -27,7 +27,8 @@ const { comparePassword } = require("../util/password");
 const strategy = new LocalStrategy((username, password, done) => {
   // const authUser = (username, password, done) => {
   //Search the user, password in the DB to authenticate the user
-  User.findOne({ username: username }, function (err, user) {
+  const user = User.findOne({ where:{ username: username} }, function (err, user) {
+    console.log("user: ", user);
     if (err) {
       return done(err);
     }
@@ -35,17 +36,28 @@ const strategy = new LocalStrategy((username, password, done) => {
       return done(null, false);
     }
     if (!bcrypt.compareSync(password, user.password)) {
+      console.log("passwords don't match");
       return done(null, false);
     }
+    console.log("passwords match");
     return done(null, user);
-  });
+  })
+  return done(null, user);
 });
 
 const authLogin = () => {
+  // passport.authenticate("local"),
+  //   (req, res) => {
+  //     console.log("passport authLogin route hit2");
+  //     res.send({ success: true });
+  //   };
   passport.authenticate("local", {
-    successRedirect: "/user",
     failureRedirect: "/login",
-  });
+    successRedirect: "/secret",
+  }),
+    (req, res) => {
+      console.log(req.user);
+    };
 };
 
 const checkAuthenticated = (req, res, next) => {
