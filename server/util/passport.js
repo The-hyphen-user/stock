@@ -52,7 +52,7 @@ const authLogin = () => {
   //     res.send({ success: true });
   //   };
   passport.authenticate("local", {
-    failureRedirect: "/login",
+    failureRedirect: "/",
     successRedirect: "/secret",
   }),
     (req, res) => {
@@ -64,12 +64,14 @@ const checkAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/login");
+  console.log("not authenticated");
+  //res.redirect("/login");
+  res.status(401).send("not authenticated");
 };
 
 const authLogout = (req, res) => {
   req.logout();
-  res.redirect("/login");
+  res.redirect("/");
 };
 
 module.exports = {

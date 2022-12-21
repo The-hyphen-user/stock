@@ -29,16 +29,29 @@ router.post(
         const transactions = Transaction.findAll({ where: { userId: id } });
         const holdings = Holding.findAll({ where: { userId: id } });
         const watchlists = Watchlist.findAll({ where: { userId: id } });
-        return Promise.all([transactions, holdings, watchlists]);
+        //const data = Promise.all([transactions, holdings, watchlists]);
+        const data = Promise.all([transactions, holdings, watchlists, user]);
+        return (data)
       })
       .then((data) => {
-        const [transactions, holdings, watchlists] = data;
+        const [transactions, holdings, watchlists, user] = data;
+        const userPayload = {
+          id: req.user.id,
+          username: req.user.username,
+          balance: req.user.balance,
+        }
         const payload = {
+          user: {
+            id: user.id,
+            username: user.username,
+            balance: user.balance,
+          },
           transactions: transactions,
           holdings: holdings,
           watchlists: watchlists,
         };
-        console.log("✨data: ", payload);
+        // console.log("payload: ", payload);
+        //  console.log("responce: ", res);
         res.send(payload);
       });
   }
@@ -47,12 +60,12 @@ router.post("/logout", authLogout);
 
 //get username based on cookie/token/session
 router.get("/", (req, res) => {
-  console.log("--✨User: ", req.user);
+  //console.log("--✨User: ", req.user);
 });
 
 router.use((req, res) => {
   console.log("hit /api/user 404");
-  console.log("route hit was: ", req.url);
+  //console.log("route hit was: ", req.url);
   res.status(404).send("404 not found");
 });
 
