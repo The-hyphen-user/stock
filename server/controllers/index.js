@@ -6,7 +6,7 @@ controller.User = require("./user.controller.js");
 // controller.Holding = require("./holding.controller.js");
 // controller.Watchlist = require("./watchlist.controller.js");
 controller.Stock = require("./stock.controller.js");
-// controller.Transaction = require("./transaction.controller.js");
+controller.Transaction = require("./transaction.controller.js");
 
 
 

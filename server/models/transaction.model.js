@@ -24,3 +24,5 @@ module.exports = (sequelize, Sequelize) => {
   });
   return Transaction;
 }
+
+//duh needs quantity

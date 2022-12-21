@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 
 const dotenv = require("dotenv");
@@ -6,10 +7,14 @@ dotenv.config();
 
 const cors = require("cors");
 
+// const corsOptions = {
+//   origin: ['http://localhost:3000', process.env.CLIENT_ORIGIN],
+//   credentials: true
+// };
+
 const corsOptions = {
-  origin: ['http://localhost:3000', process.env.CLIENT_ORIGIN],
-  credentials: true
-};
+  origin: 'http://localhost:3000', credentials: true
+}
 
 
   // origin: process.env.CLIENT_ORIGIN || "http://localhost:8081",
@@ -27,6 +32,7 @@ const router = require("./routes");
 
 app.use(express.json()); //switch when passport is enabled
 app.use(express.urlencoded({extended: false})) //switch when passport is enabled
+// app.use(bodyParser.json());
 
 app.use(cors(corsOptions));
 
@@ -55,13 +61,13 @@ passport.deserializeUser( (userObj, done) => {
 app.use((req, res, next) => {
   // const {cookies} = req;
   console.log("route hit was: ", req.url);
-  console.log('URI: ', req)
+  //console.log('URI: ', req)
   // if ('sessionId' in cookies) {
   //   console.log('sessionId cookie found', cookies.sessionId)
   // } else {
   //   console.log('sessionId cookie not found')
   // }
-  console.log
+  // console.log('query',req.query)
   next();
 });
 
@@ -91,6 +97,14 @@ app.use("/api/sync", (req, res) => {
       symbol: "MSFT",
       name: "Microsoft",
     });
+    const stock3 = Stock.create({
+      symbol: "GOOG",
+      name: "Google",
+    });
+    const stock4 = Stock.create({
+      symbol: "AMZN",
+      name: "Amazon",
+    });
     const holding1 = Holding.create({
       quantity: 10,
       symbol: "AAPL",
@@ -116,7 +130,7 @@ app.use("/api/sync", (req, res) => {
       symbol: "MSFT",
       userId: 1,
     });
-    return Promise.all([user1, stock1, stock2, holding1, holding2, transaction1, watchlist1, watchlist2]);
+    return Promise.all([user1, stock1, stock2, stock3, stock4, holding1, holding2, transaction1, watchlist1, watchlist2]);
   })
   .then(() => {
 

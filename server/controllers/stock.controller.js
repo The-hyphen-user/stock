@@ -1,55 +1,66 @@
 const db = require("../models");
 const Stock = db.Stock;
 const Op = db.Sequelize.Op;
-
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
+const dotenv = require("dotenv").config();
 const JWTSecret = process.env.JWT_SECRET;
+const axios = require("axios");
 
+const token = 'cb3l2vqad3i8tak12f6g'
+// const token = process.env.FINNHUB_API_KEY
 
 exports.getStock = (req, res) => {
-  if(!req.params.ticker){//check if it needs to be like this req.params['ticker']
+  const query = req.query.name;
+  console.log("query: ", query);
+  if (!req.query.name) {
     res.status(400).send({
-      message: "Content can not be empty!",
+      message: "Content can not be empty!1",
     });
     return;
   }
   Stock.findOne({
     where: {
-      ticker: req.params.ticker,
+      symbol: req.query.name,
     },
   })
     .then((stock) => {
       if (!stock) {
+        console.log("stock not found");
         res.status(404).send({
           message: "Stock not found",
         });
         return;
       }
-      res.send(stock);
+      getStockPriceFromFinnhub(stock.symbol, token)
+      .then((data) => {
+        res.send({
+          stock,
+          price: data.c,
+        });
+      })
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(404).send({
         message: "Error retrieving stock",
       });
     });
 };
 
 exports.searchStock = (req, res) => {
-  if(!req.params.query){
+  console.log("get herer?", req.query);
+  if (!req.query.name) {
     res.status(400).send({
-      message: "Content can not be empty!",
+      message: "Content can not be empty!2",
     });
     return;
   }
+  const query = req.query.name;
   Stock.findAll({
     where: {
       name: {
-        [Op.like]: `%${req.params.query}%`,
+        [Op.like]: `%${query}%`,
       },
-    }, limit: 50
+    },
+    limit: 50,
   })
     .then((stocks) => {
       if (!stocks) {
@@ -64,10 +75,27 @@ exports.searchStock = (req, res) => {
       res.status(500).send({
         message: "Error retrieving stock",
       });
-    })
+    });
 };
 
-// module.exports = {
-//   getStock,
-//   searchStock,
-// };
+exports.getPrice = (req, res) => {
+  const symbol = req.query.name;
+  // const token = 'cb3l2vqad3i8tak12f6g'
+  getStockPriceFromFinnhub(symbol, token).then((data) => {
+    res.send(data);
+  })
+};
+
+const getStockPriceFromFinnhub = async (symbol, token) => {
+  try {
+    const finnhubPromise = await axios.get(
+      `https://finnhub.io/api/v1/quote?symbol=${symbol}`,{headers: { 'X-Finnhub-Token': token },}
+      // `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${token}`
+      // `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=cb3l2vqad3i8tak12f6g`
+    );
+    return finnhubPromise.data;
+  } catch (error) {
+    console.error("error: ", error);
+    res.send({"error": error})
+  }
+};
