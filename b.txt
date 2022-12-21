@@ -5,7 +5,7 @@ all routes in one list
 /api/stock/:ticker
 /api/stock/serch/:query
 /api/holding
-/api/transaction
+/api/transaction/all
 /api/transaction/buy/:ticker/:quantity
 /api/transaction/sell/:ticker/:quantity
 /api/watchlist

@@ -1,27 +1,12 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react'
-import Stock from './Stock';
-import { TextField, Grid, Card, Paper, Box } from '@material-ui/core';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import Stock from "./Stock";
+import { TextField, Grid, Card, Paper, Box } from "@material-ui/core";
+import { useSelector } from "react-redux";
 
 const Transactions = () => {
-
-  const [transactions, setTransactions] = useState([]);
-
-  useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/stockwatch/transactions/', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then((res) => {
-      console.log(res.data);
-      const stocks = []
-      res.data.forEach((item) => {
-        stocks.push(item)
-      })
-      setTransactions(res.data)
-
-    })
-  }, [])
+  // const [transactions, setTransactions] = useState([]);
+  const transactions = useSelector((state) => state.transaction.transaction);
 
   /**
    example transaction object
@@ -36,35 +21,17 @@ const Transactions = () => {
   return (
     <div>
       <h3>Transactions</h3>
-      {transactions.map((transaction) => (
-        <div key={transaction.id}>
-          <p>{transaction.stock.name}</p>
-          <p>{transaction.amount} shares of {transaction.stock.ticker} at {transaction.price} on {transaction.date}</p>
-        </div>
-      ))}
-      <Box
-      sx={{
-        p: 2,
-        display: 'grid',
-        gap: 2,
-        width: '10%',
-      }}
-      >
-      {transactions.map((transaction) => (
-        <Stock key={transaction.id}
-          ticker={transaction.stock.ticker}
-          amount={transaction.amount}
-          price={transaction.price}
-          name={transaction.stock.name}
-          id={transaction.id}
-        />
-      ))}
-      </Box>
-
-
-
+      <div>
+        {transactions.map((transaction, index) => (
+          <li key={index}>
+            <p>{transaction.symbol}</p>
+            <p>{transaction.price}</p>
+            <p>{transaction.time}</p>
+          </li>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Transactions
+export default Transactions;

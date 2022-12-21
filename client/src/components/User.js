@@ -1,38 +1,41 @@
-import React, { useState, useEffect } from 'react'
-import { Grid, Paper } from '@material-ui/core';
-import { BrowserRouter, Route, Routes, Link, Outlet } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Grid, Paper } from "@material-ui/core";
+import { BrowserRouter, Route, Routes, Link, Outlet, useNavigate } from "react-router-dom";
+import {  } from "react-router-dom";
 
-import Watchlist from './Watchlist';
-import Transactions from './Transactions';
-import Usernav from './Usernav';
-import './componentCSS.css'
-import axios from 'axios';
-
+import Watchlist from "./Watchlist";
+import Transactions from "./Transactions";
+import Usernav from "./Usernav";
+import "./componentCSS.css";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const User = () => {
-
+  let navigate = useNavigate();
+  const username = useSelector((state) => state.user.user.username);
 
   //use effect that fetches user data from db with endpoint /user/username
-  const [user, setUser] = useState('')
+  const [user, setUser] = useState("");
 
+  //useeffect that navigates if username is null
   useEffect(() => {
-    axios.get('/user')
-      .then(res => {
-        console.log(res.data)
-        setUser(res.data)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }, [])
+    if (username == null) {
+      navigate('/login', { replace: true });
+    }
+  }, [username]);
 
 
-
-
-
-
-
-
+  // useEffect(() => {
+  //   axios
+  //     .get("/user")
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setUser(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   const [fakeStocks, setFakeStocks] = useState([
     {
@@ -51,27 +54,34 @@ const User = () => {
     },
   ]);
 
-  return (
-    <div className='user'>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Paper elevation={3}><Usernav /></Paper>
+  // if (username == null) {
+  //   navigate('/login', { replace: true });
+  // }else {
+    return (
+      <>
+      <div className="user">
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <Paper elevation={3}>
+              <Usernav />
+            </Paper>
+          </Grid>
+          <Grid item xs={8}>
+            <h3>{username}</h3>
+            <Paper elevation={3}>
+              <Outlet />
+            </Paper>
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-
-          <h3>user</h3>
-          <Paper elevation={3}>
-            <Outlet />
-          </Paper>
-        </Grid>
-      </Grid>
+      </div>
+      </>
+    );
+  // }
 
 
-    </div>
-  )
-}
+};
 
-export default User
+export default User;
 
 /*
 
