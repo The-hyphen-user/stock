@@ -1,0 +1,34 @@
+{
+  "": 2,
+  "": [
+    {
+      "name": "client",
+      "image": "thehyphenuser/stock-client",
+      "hostname": "client",
+      "essential": false
+
+    },
+    {
+      "name": "api",
+      "image": "thehyphenuser/stock-api",
+      "hostname": "api",
+      "essential": false
+    },
+    {
+      "name": "nginx",
+      "image": "thehyphenuser/stock-nginx",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ],
+      "links": [
+        "client",
+        "api"
+      ]
+    }
+  ]
+}

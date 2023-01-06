@@ -2,15 +2,15 @@ all routes in one list
 /api/user/register
 /api/user/login
 /api/user/logout
-/api/stock/:ticker
+/api/stock/:symbol
 /api/stock/serch/:query
 /api/holding
 /api/transaction/all
-/api/transaction/buy/:ticker/:quantity
-/api/transaction/sell/:ticker/:quantity
+/api/transaction/buy/:symbol/:quantity
+/api/transaction/sell/:symbol/:quantity
 /api/watchlist
-/api/watchlist/add/:ticker
-/api/watchlist/remove/:ticker
+/api/watchlist/add/:symbol
+/api/watchlist/remove/:symbol
 
 
 

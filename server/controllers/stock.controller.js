@@ -81,8 +81,11 @@ exports.searchStock = (req, res) => {
 exports.getPrice = (req, res) => {
   const symbol = req.query.name;
   // const token = 'cb3l2vqad3i8tak12f6g'
-  getStockPriceFromFinnhub(symbol, token).then((data) => {
-    res.send(data);
+  const data = getStockPriceFromFinnhub(symbol, token)
+  .then((data) => {
+    // const price = data.c;
+    console.log("price: ", data.c);
+    res.status(200).send({"price": data.c});
   })
 };
 

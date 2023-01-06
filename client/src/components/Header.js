@@ -42,13 +42,7 @@ const Header = () => {
             </Button>
           </Link>
         </Grid>
-        <Grid item>
-          <Link to="/highscores">
-            <Button variant="contained" color="primary">
-              High Scores
-            </Button>
-          </Link>
-        </Grid>
+
         <Grid item>
           <Link to="/sync">
             <Button variant="contained" color="primary">
@@ -69,3 +63,12 @@ const Header = () => {
 };
 
 export default Header;
+/*
+        <Grid item>
+          <Link to="/highscores">
+            <Button variant="contained" color="primary">
+              High Scores
+            </Button>
+          </Link>
+        </Grid>
+        */

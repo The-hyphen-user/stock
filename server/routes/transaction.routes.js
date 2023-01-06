@@ -22,5 +22,4 @@ if sufficient funds, create transaction
 update user balance
 if holding exists, update holding
 if holding does not exist, create holding
-
 */

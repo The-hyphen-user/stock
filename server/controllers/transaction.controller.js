@@ -28,11 +28,13 @@ exports.buyStock = (req, res) => {
   const symbol = req.query.symbol;
   const quantity = Number(req.query.quantity);
   const id = req.user.fulfillmentValue.id;
+  console.log("symbol: ", symbol, "quantity: ", quantity, "id: ", id);
   // const balance = Number(req.user.fulfillmentValue.balance);
-  if (!symbol || !quantity || !id) {
+  if (!symbol || !quantity || !id || quantity < 1) {
     res.status(404).send({
       message: "Missing symbol or quantity",
     });
+    return
   }
   console.log("id", id);
   const user = User.findOne({ where: { id: id } })
@@ -47,32 +49,61 @@ exports.buyStock = (req, res) => {
             });
           } else {
             const newBalance = user.balance - price.c * quantity;
-            const newUser = User.update({ balance: newBalance }, { where: { id: id } })
-              .then((newUser) => {
-                const newTransaction = Transaction.create({ userId: id, symbol: symbol, quantity: quantity, price: price.c, time: Date.now() })
-                .then((newTransaction)=>{
-                  if (previouslyOwned) {
-                    const newQuantity = Number(previouslyOwned.quantity) + quantity
-                    const newHolding = Holding.update({userId:id, quantity: newQuantity}, {where: { userId:id}})
-                    .then((newHolding) =>{
-                      console.log("newHolding: ", newHolding)
-                      res.status(200).send({updatedInfo:{balance: newBalance, transaction: newTransaction, holding:{
-                        id:previouslyOwned.id,
-                        userId:id,
-                        quantity: newQuantity,
-                        symbol:symbol
-                      }}})
-                    })
-                    
-                  } else{
-                    Holding.create({ userId:id, quantity:quantity, symbol:symbol})
-                    .then((newHolding) =>{
-                      res.status(200).send({updatedInfo:{balance: newBalance, transaction: newTransaction, holding:newHolding}})
-                    })
-                    
-                  }
-                })
-              })
+            const newUser = User.update(
+              { balance: newBalance },
+              { where: { id: id } }
+            ).then((newUser) => {
+              const newTransaction = Transaction.create({
+                userId: id,
+                symbol: symbol,
+                quantity: quantity,
+                price: price.c,
+                time: Date.now(),
+              }).then((newTransaction) => {
+                if (previouslyOwned) {
+                  const newQuantity =
+                    Number(previouslyOwned.quantity) + quantity;
+                  const newHolding = Holding.update(
+                    { userId: id, quantity: newQuantity },
+                    { where: { userId: id, symbol: symbol } }
+                  ).then((newHolding) => {
+                    console.log("newHolding: ", newHolding);
+                    res.status(200).send({
+                      updatedInfo: {
+                        balance: newBalance,
+                        transaction: newTransaction,
+                        holding: {
+                          id: previouslyOwned.id,
+                          userId: id,
+                          quantity: newQuantity,
+                          symbol: symbol,
+                        },
+                      },
+                    });
+                  });
+                } else {
+                  Holding.create({
+                    userId: id,
+                    quantity: quantity,
+                    symbol: symbol,
+                  }).then((newHolding) => {
+                    res.status(200).send({
+                      updatedInfo: {
+                        balance: newBalance,
+                        transaction: newTransaction,
+                        holding: {
+                          id: newHolding.id,
+                          userId: id,
+                          quantity: quantity,
+                          symbol: symbol,
+                          price: price.c,
+                        },
+                      },
+                    });
+                  });
+                }
+              });
+            });
           }
         });
       });
@@ -83,105 +114,149 @@ exports.buyStock = (req, res) => {
       });
     });
 };
+//get user from req
+//get holding from user
+//get quantity from holding
+//get price of stock from getStockPrice
+//if quantity > holding.quantity, return error
+//if quantity < holding.quantity, update holding
+//if quantity === holding.quantity, delete holding
+//update user balance
+//create transaction
+//return updated user, holding, transaction using promises
 
-exports.sellStock = (req, res) => {};
+exports.sellStock = (req, res) => {
+  const symbol = req.query.symbol;
+  const quantity = Number(req.query.quantity);
+  const id = req.user.fulfillmentValue.id;
+  if (!symbol || !quantity || !id) {
+    res.status(404).send({
+      message: "Missing symbol or quantity",
+    });
+  }
+  console.log("id", id, "symbol", symbol, "quantity", quantity);
+  const user = User.findOne({ where: { id: id } });
+  const holding = Holding.findOne({ where: { userId: id, symbol: symbol } });
+  const price = getStockPrice(symbol);
+  Promise.all([user, holding, price])
+  .then((data) => {
+    console.log("user: ", data[0], "holding: ", data[1], "price: ", data[2]);
+    const user = data[0];
+    const holding = data[1];
+    const price = data[2];
+    console.log("user2: ", user, "holding2: ", holding, "price2: ", price);
+    if (!holding) {
+      res.status(404).send({
+        message: "No stock to sell",
+      });
+    } else if (quantity > holding.quantity) {
+      res.status(422).send({
+        message: "Insufficient quantity",
+      });
+    } else {
+      const newQuantity = holding.quantity - quantity;
+      const newHolding =
+        newQuantity === 0
+          ? Holding.destroy({ where: { userId: id, symbol: symbol } })
+          : Holding.update(
+              { quantity: newQuantity },
+              { where: { userId: id, symbol: symbol } }
+            );
 
-// const db = require("../models");
-// const Transaction = db.Transaction;
-// const Op = db.Sequelize.Op;
-// // const Date = require('date-and-time');
+      const newBalance = user.balance + price.c * quantity;
+      const newUser = User.update(
+        { balance: newBalance },
+        { where: { id: id } }
+      );
+      const newTransaction = Transaction.create({
+        userId: id,
+        symbol: symbol,
+        quantity: quantity,
+        price: price.c,
+        time: Date.now(),
+      });
+      Promise.all([newHolding, newUser, newTransaction]).then((data) => {
+        const newHolding = data[0];
+        const newTransaction = data[2];
+        console.log("newHolding: ", {
+          holding: {
+            id: holding.id,
+            userId: id,
+            quantity: newQuantity,
+            symbol: symbol,
+          },
+        });
 
-// // Create and Save a new Transaction
-// exports.create = (req, res) => {
-//     // Validate request
-//     if (!req.body.username || !req.body.symbol || !req.body.quantity || !req.body.price) {
-//         res.status(400).send({
-//         message: "Content can not be empty!"
-//         });
-//         return;
-//     }
+        res.status(200).send({
+          updatedInfo: {
+            balance: newBalance,
+            transaction: newTransaction,
+            holding: {
+              id: holding.id,
+              userId: id,
+              quantity: newQuantity,
+              symbol: symbol,
+            },
+          },
+        });
+      });
+    }
+  });
+};
 
-//     // Create a Transaction
-//     const transaction = {
-//         username: req.body.username,
-//         symbol: req.body.symbol,
-//         quantity: req.body.quantity,
-//         time: Date.now(),
-//         price: req.body.price
-//     };
-
-//     // Save Transaction in the database
-//     User.create(transaction)
-//         .then(data => {
-//         res.send(data);
-//         })
-//         .catch(err => {
-//         res.status(500).send({
-//             message:
-//             err.message || "Some error occurred while creating the Transaction."
-//         });
-//         });
-//     }
-
-// // Retrieve all Transactions for a specific user from the database.
-// exports.findAll = (req, res) => {
-//     const username = req.params.username;
-//     var condition = username ? { username: { [Op.like]: `%${username}%` } } : null;
-
-//     User.findAll({ where: condition })
-//         .then(data => {
-//         res.send(data);
-//         })
-//         .catch(err => {
-//         res.status(500).send({
-//             message:
-//             err.message || "Some error occurred while retrieving transactions."
-//         });
-//         });
-//     }
-
-// // Delete a Transaction with the specified id in the request
-// exports.deleteOne = (req, res) => {
-//     //validate request
-//     if (!req.params.id) {
-//         res.status(400).send({
-//         message: "Content can not be empty!"
-//         });
-//         return;
-//     }
-
-//     const id = req.params.id;
-
-//     Transaction.destroy({
-//         where: { id: id }
-//     })
-//         .then(() => {
-//         res.send({
-//             message: "Transaction was deleted successfully!"
-//         });
-//         })
-//         .catch(err => {
-//         res.status(500).send({
-//             message: "Error deleting Transaction with id=" + id
-//         });
-//         });
-//     }
-
-// // Delete all Transactions from the database for a specific user
-// exports.deleteAll = (req, res) => {
-//     const username = req.params.username;
-
-//     Transaction.destroy({
-//         where: { username: username }
-//     })
-//         .then(() => {
-//         res.send({
-//             message: "All Transactions were deleted successfully!"
-//         });
-//         })
-//         .catch(err => {
-//         res.status(500).send({
-//             message: "Error deleting Transactions with username=" + username
-//         });
-//         });
-//     }
+exports.sellStockRealShitMode = (req, res) => {
+  const symbol = req.query.symbol;
+  const quantity = Number(req.query.quantity);
+  const id = req.user.fulfillmentValue.id;
+  if (!symbol || !quantity || !id) {
+    res.status(404).send({
+      message: "Missing symbol or quantity",
+    });
+  }
+  const user = User.findOne({ where: { id: id } }).then((user) => {
+    const exsistingHolding = Holding.findOne({
+      where: { userId: id, symbol: symbol },
+    }).then((exsistingHolding) => {
+      if (!exsistingHolding) {
+        res.status(404).send({
+          message: "No stock to sell",
+        });
+      } else {
+        const price = getStockPrice(symbol).then((price) => {
+          const newBalance = user.balance + price.c * quantity;
+          const newUser = User.update(
+            { balance: newBalance },
+            { where: { id: id } }
+          ).then((newUser) => {
+            const newTransaction = Transaction.create({
+              userId: id,
+              symbol: symbol,
+              quantity: -quantity,
+              price: price.c,
+              time: Date.now(),
+            }).then((newTransaction) => {
+              const newQuantity = Number(exsistingHolding.quantity) - quantity;
+              const newHolding = Holding.update(
+                { userId: id, quantity: newQuantity },
+                { where: { userId: id } }
+              ).then((newHolding) => {
+                res.status(200).send({
+                  updatedInfo: {
+                    balance: newBalance,
+                    transaction: newTransaction,
+                    holding: {
+                      id: exsistingHolding.id,
+                      userId: id,
+                      quantity: newQuantity,
+                      symbol: symbol,
+                    },
+                  },
+                });
+              });
+            });
+          });
+        });
+      }
+    });
+  });
+};

@@ -33,10 +33,10 @@ const About = () => {
       </div>
       <div>
       <h4>Issues</h4>
-      <p>if you encounter any issue or suggestions please email me <a href="mailto:daniel.wamsher@gmail.com"><button>Email</button></a></p>
+      <p>if you encounter any issue or suggestions please email me</p>
       </div>
     </div>
   )
 }
-
+//  daniel.wamsher@gmail.com <a href="mailto:daniel.wamsher@gmail.com"><button>Email</button></a>
 export default About

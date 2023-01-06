@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 const User = () => {
   let navigate = useNavigate();
   const username = useSelector((state) => state.user.user.username);
+  const balance = useSelector((state) => state.user.user.balance);
 
   //use effect that fetches user data from db with endpoint /user/username
   const [user, setUser] = useState("");
@@ -67,7 +68,7 @@ const User = () => {
             </Paper>
           </Grid>
           <Grid item xs={8}>
-            <h3>{username}</h3>
+            <h3>{username}  ${balance}</h3>
             <Paper elevation={3}>
               <Outlet />
             </Paper>

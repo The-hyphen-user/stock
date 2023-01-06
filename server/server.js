@@ -7,19 +7,18 @@ dotenv.config();
 
 const cors = require("cors");
 
-// const corsOptions = {
-//   origin: ['http://localhost:3000', process.env.CLIENT_ORIGIN],
-//   credentials: true
-// };
 
+//dev cors options
+// const corsOptions = {
+//   origin: 'http://localhost:3000', credentials: true
+// }
+
+// docker/nginx cors options
+const DOCKER_CLIENT_ORIGIN = process.env.CLIENT_ORIGIN
 const corsOptions = {
-  origin: 'http://localhost:3000', credentials: true
+  origin: DOCKER_CLIENT_ORIGIN, credentials: true
 }
 
-
-  // origin: process.env.CLIENT_ORIGIN || "http://localhost:8081",
-  // origin: true,
-  // credentials: true,
 
 const passport = require("passport");
 const session = require("express-session");
@@ -77,7 +76,8 @@ const Transaction = db.Transaction;
 const Watchlist = db.Watchlist;
 const Stock = db.Stock;
 
-app.use("/api/sync", (req, res) => {
+// app.use('/sync', (req, res) => {//docker route
+app.use("/api/sync", (req, res) => {//dev route
   console.log("hit sync");
   db.sequelize.sync({ force: true }).then(() => {
     console.log("sync db");
@@ -105,6 +105,10 @@ app.use("/api/sync", (req, res) => {
       symbol: "AMZN",
       name: "Amazon",
     });
+    const stock5 = Stock.create({
+      symbol: "AMZA",
+      name: "Amazing Tree service",
+    });
     const holding1 = Holding.create({
       quantity: 10,
       symbol: "AAPL",
@@ -130,7 +134,7 @@ app.use("/api/sync", (req, res) => {
       symbol: "MSFT",
       userId: 1,
     });
-    return Promise.all([user1, stock1, stock2, stock3, stock4, holding1, holding2, transaction1, watchlist1, watchlist2]);
+    return Promise.all([user1, stock1, stock2, stock3, stock4, stock5, holding1, holding2, transaction1, watchlist1, watchlist2]);
   })
   .then(() => {
 
@@ -140,14 +144,15 @@ app.use("/api/sync", (req, res) => {
   });
 });
 
-app.use("/api", router);
+// app.use("/api", router);//dev route
+app.use('/api', router)//docker route
 
 app.get("/test", (req, res) => {
   console.log("test route hit");
   res.send("hello world");
 });
 
-app.get("/", (req, res) => res.send("Home!"));
+app.get("/home", (req, res) => res.send("Home!"));
 
 app.use((req, res) => {
   //left over routes
@@ -156,7 +161,7 @@ app.use((req, res) => {
   res.status(404).send("404 not found");
 });
 
-const PORT = process.env.NODE_DOCKER_PORT || 5000;
+const PORT = process.env.API_DOCKER_URL || 5000;
 app.listen(PORT, () => {
   console.log(`🎇🎇🎇Server is running on port ${PORT}.`);
 });

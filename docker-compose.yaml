@@ -69,10 +69,14 @@ services:
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    # networks:
+    #   - Backend
   
   nginx:
     build: ./nginx
     restart: unless-stopped
+    # expose:
+    #   - 3050:3050
     ports:
       - "3050:80"
   
@@ -82,8 +86,7 @@ services:
     restart: unless-stopped
     env_file: ./.env
     ports:
-      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
-      # - "5000:5000"
+      - $API_LOCAL_PORT:$API_DOCKER_URL # - "5000:8000"
     volumes:
       - ./server:/app
       - /app/node_modules
@@ -93,23 +96,32 @@ services:
       - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - DB_NAME=$MYSQLDB_DATABASE
       - DB_PORT=$MYSQLDB_DOCKER_PORT
-      # - DB_HOST=localhost
-      # - DB_USER=mysqldb
-      # - DB_PASSWORD=mysqldb
-      # - DB_NAME=mysqldb
-      # - DB_PORT=3306
       - JWT_SECRET=$JWT_SECRET
       - FINNHUB_API_KEY=$FINNHUB_API_KEY
-      - CLIENT_ORIGIN=$CLIENT_ORIGIN
+      - CLIENT_ORIGIN=$CLIENT_ORIGIN # http://localhost:3000
+    # networks:
+    #   - Frontend
+    #   - Backend
       
   client:
-    build: ./client
+    build: 
+      context: ./client
+      args:
+        - REACT_APP_API_ORIGIN=$API_ORIGIN
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - $REACT_LOCAL_PORT:$REACT_DOCKER_URL #
+      # - "3000:3000"
     volumes:
       - ./client:/app
       - /app/node_modules
+    # networks:
+    #   - Frontend
 
 volumes:
   db:
+
+# networks:
+#   Frontend:
+#   Backend:
+

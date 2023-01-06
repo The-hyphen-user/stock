@@ -21,18 +21,18 @@ import Sync from './components/Sync';
 import { useSelector } from 'react-redux';
 
 
-//
-//<Header />
 function App() {
   // const BASE_URL = process.env.REACT_APP_ACCESS_API_URL;
-  axios.defaults.withCredentials = true;
   // const AUTH_TOKEN = useSelector((state) => state.auth.bearerToken);
   // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
   // axios.defaults.headers['Content-Type'] = 'application/json';
   // axios.defaults.headers['Access-Control-Allow-Credentials'] = true;
   // axios.defaults.headers['Access-Control-Allow-Origin'] = 'http://localhost:5000';
+
+
+  axios.defaults.withCredentials = true;
   axios.defaults.baseURL = "http://localhost:5000/api"; //for local dev running.
-  // axios.defaults.baseURL = "http://localhost:6868/api" ;//for docker-compose running
+  // axios.defaults.baseURL = "http://localhost:3050" ;//for docker-compose running
 
 
   return (

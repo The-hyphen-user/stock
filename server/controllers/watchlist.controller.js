@@ -1,3 +1,61 @@
+const db = require("../models");
+const User = db.User;
+const Watchlist = db.Watchlist;
+
+
+
+exports.toggleWatchlist = (req, res) => {
+  const user = req.user;
+  const symbol = req.query.symbol;
+  const id = user.fulfillmentValue.id;
+  Watchlist.findOne({where: { userId: id, symbol: symbol }})
+  .then((watchlistStatus) => {
+    if (!watchlistStatus) {
+      Watchlist.create({
+        userId: id,
+        symbol: symbol
+      }).then((newWatchlistItem) => {
+        res.status(200).send({
+          updatedInfo:{
+            symbol: symbol,
+            status: true
+          }
+        })
+      })
+    } else {
+      Watchlist.destroy({where: { userId: id, symbol: symbol }})
+      .then((deletedWatchlistItem) => {
+        res.status(200).send({
+          updatedInfo:{
+            symbol: symbol,
+            status: false
+          }
+        })
+      })
+    }
+  })
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const db = require("../models");
 // const Watchlist = db.Watchlist;
 // const Op = db.Sequelize.Op;

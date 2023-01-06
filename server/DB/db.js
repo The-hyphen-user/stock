@@ -38,15 +38,15 @@
 // db.User.hasMany(db.Watchlist);
 // db.User.hasMany(db.Transaction);
 
-// db.Holding.hasOne(db.Stock, {foreignKey: 'ticker'});
-// db.Watchlist.hasOne(db.Stock, {foreignKey: 'ticker'});
-// db.Transaction.hasOne(db.Stock, {foreignKey: 'ticker'});
+// db.Holding.hasOne(db.Stock, {foreignKey: 'symbol'});
+// db.Watchlist.hasOne(db.Stock, {foreignKey: 'symbol'});
+// db.Transaction.hasOne(db.Stock, {foreignKey: 'symbol'});
 // db.Holding.hasMany(db.Transaction, {foreignKey: 'holdingId'});
 
 
 // // db.Transaction.belongsTo(db.Holding, {foreignKey: 'holdingId'});
 // // db.Holding.hasOne(db.Transaction, {foreignKey: 'holdingId'});
-// // db.Watchlist.hasOne(db.Stock, {foreignKey: 'ticker'});
+// // db.Watchlist.hasOne(db.Stock, {foreignKey: 'symbol'});
 // // db.Stock.hasMany(db.Holding);
 // // db.Stock.hasMany(db.Watchlist);
 // // db.Stock.hasMany(db.Transaction);
