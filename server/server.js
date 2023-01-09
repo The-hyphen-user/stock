@@ -9,15 +9,15 @@ const cors = require("cors");
 
 
 //dev cors options
-// const corsOptions = {
-//   origin: 'http://localhost:3000', credentials: true
-// }
+const corsOptions = {
+  origin: 'http://localhost', credentials: true
+}
 
 // docker/nginx cors options
-const DOCKER_CLIENT_ORIGIN = process.env.CLIENT_ORIGIN
-const corsOptions = {
-  origin: DOCKER_CLIENT_ORIGIN, credentials: true
-}
+// const DOCKER_CLIENT_ORIGIN = process.env.CLIENT_ORIGIN
+// const corsOptions = {
+//   origin: DOCKER_CLIENT_ORIGIN || 'http://localhost', credentials: true
+// }
 
 
 const passport = require("passport");
@@ -77,8 +77,8 @@ const Watchlist = db.Watchlist;
 const Stock = db.Stock;
 
 // app.use('/sync', (req, res) => {//docker route
-app.use("/api/sync", (req, res) => {//dev route
-  console.log("hit sync");
+app.use("/api/sync2", (req, res) => {//dev route
+  console.log("hit sync2");
   db.sequelize.sync({ force: true }).then(() => {
     console.log("sync db");
   })
@@ -160,6 +160,8 @@ app.use((req, res) => {
   console.log("route hit was: ", req.url);
   res.status(404).send("404 not found");
 });
+
+
 
 const PORT = process.env.API_DOCKER_URL || 5000;
 app.listen(PORT, () => {

@@ -26,6 +26,9 @@ exports.register = (req, res) => {
     password: hashedPassword,
     balance: 10000,
   };
+  //console log with emoticon
+  // console.log("✨req: ", req.body.username)
+  console.log("✨user: ", user);
 
   // Save user in the database
   User.create(user)

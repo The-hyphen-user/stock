@@ -20,6 +20,13 @@ router.use("/stock", stockRoutes);
 router.use('/transaction', checkAuthenticated, transactionRoutes);
 router.use('/watchlist', checkAuthenticated, watchlistRoutes);
 
+
+// app.use("/api/sync", (req, res) => {//dev route
+router.use('/sync', (req, res) => {
+  console.log('hit serversync')
+  const syncStocks = require('../util/syncStocks')
+})
+
 router.use((req, res) => {
   console.log("hit /api 404");
   console.log("route hit was: ", req.url);
