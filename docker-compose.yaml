@@ -17,7 +17,8 @@ services:
     # expose:
     #   - 3050:3050
     ports:
-      - "80:80"
+      - $NGINX_EXTERNAL_PORT:$NGINX_INTERNAL_PORT #production port
+      # - "80:80"
   
 
   api:
@@ -25,7 +26,7 @@ services:
     restart: unless-stopped
     env_file: ./.env
     ports:
-      - $API_LOCAL_PORT:$API_DOCKER_URL 
+      - $API_LOCAL_PORT:$API_DOCKER_URL #production port
       # - "5000:8000"
     volumes:
       - ./server:/app
@@ -50,7 +51,7 @@ services:
         - REACT_APP_API_ORIGIN=$API_ORIGIN
     restart: unless-stopped
     ports:
-      # - $REACT_LOCAL_PORT:$REACT_DOCKER_URL #
+      # - $REACT_LOCAL_PORT:$REACT_DOCKER_URL #production port
       - "3000:3000"
     volumes:
       - ./client:/app

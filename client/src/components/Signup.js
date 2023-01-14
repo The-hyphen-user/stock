@@ -4,8 +4,8 @@ import { TextField, Button } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-  const [username, setUsername] = useState('username1')
-  const [password, setPassword] = useState('password1')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const navigate = useNavigate();
 

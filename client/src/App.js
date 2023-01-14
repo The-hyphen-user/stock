@@ -18,7 +18,7 @@ import Search from './components/Search';
 import Profile from './components/Profile';
 import axios from 'axios';
 import Sync from './components/Sync';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
 
   return (
   <div className="App">
-      <p>home</p>
+<br/>
       <Header />
       <Routes>
         <Route path='login' element={<Login />} />
@@ -48,7 +48,7 @@ function App() {
         <Route path='about' element={<About />} />
         <Route path='home' element={<Home />} />
         <Route path='highscores' element={<HighScores />} />
-        <Route path='sync' element={<Sync />} />
+        <Route path='hiddensync' element={<Sync />} />
         <Route path='logout' element={<Logout />} />
 
 

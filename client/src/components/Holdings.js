@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { setHoldings } from "../features/slices/holdingSlice";
 import { Grid, Paper } from "@material-ui/core";
+
 import Stock from "./Stock";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { addWatchlistItem } from "../features/slices/watchlistSlice";
 import { setSelectedStock, resetSelectedStock } from "../features/slices/selectedStockSlice";
 
 const Holdings = () => {
@@ -51,6 +54,24 @@ const Holdings = () => {
       price: data.price,
     }))
   }
+  const handleAddToWatchlist = (data) => {
+    console.log(data)
+    axios
+    .post('/watchlist/add',{
+      params: {
+        symbol:data
+      },
+    })
+    .then((res)=> {
+      dispatch(
+        addWatchlistItem({
+          symbol: res.data.stock.symbol
+        })
+      )
+    })
+
+  }
+
 
   return (
     <>
@@ -71,7 +92,6 @@ const Holdings = () => {
         <button onClick={hangleSubmit2}>change</button>
       </div> */}
       <div>
-        <p>Holdings</p>
         <Paper elevation={3}>
         <Grid container spacing={5}
               direction={"column"}
@@ -85,6 +105,8 @@ const Holdings = () => {
                 price={holding.price}
                 selectable={true}
                 select={(data)=>{handleSelect(data)}}
+                watchlistable={false}
+
 
 
               />

@@ -6,6 +6,7 @@ const stockRoutes = require("./stock.routes");
 const transactionRoutes = require('./transaction.routes');
 const watchlistRoutes = require('./watchlist.routes');
 const {checkAuthenticated} = require('../util/passport')
+const syncStocks = require('../util/syncStocks')
 
 router.use((req, res, next) => {
   console.log("index route hit: ", req.url);
@@ -22,10 +23,7 @@ router.use('/watchlist', checkAuthenticated, watchlistRoutes);
 
 
 // app.use("/api/sync", (req, res) => {//dev route
-router.use('/sync', (req, res) => {
-  console.log('hit serversync')
-  const syncStocks = require('../util/syncStocks')
-})
+router.use('/sync', syncStocks)
 
 router.use((req, res) => {
   console.log("hit /api 404");

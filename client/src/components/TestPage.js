@@ -10,7 +10,7 @@ import "./componentCSS.css";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-const User = () => {
+const TestPage = () => {
   let navigate = useNavigate();
   const username = useSelector((state) => state.user.user.username);
   const balance = useSelector((state) => state.user.user.balance);
@@ -82,4 +82,4 @@ const User = () => {
 
 };
 
-export default User;
+export default TestPage;

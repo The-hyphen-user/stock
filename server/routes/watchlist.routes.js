@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const watchlistController = require("../controllers/watchlist.controller");
 
+router.post("/add", watchlistController.addOne);
 router.post("/", watchlistController.toggleWatchlist);
+
 
 // router.delete("/delete/:symbol/:username", watchlistController.deleteOne);
 

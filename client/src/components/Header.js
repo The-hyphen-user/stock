@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
+import { useSelector, useDispatch } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const user = useSelector((state) => state.user.user.username);
   return (
     <div>
       <Grid container spacing={2}>
@@ -21,13 +23,24 @@ const Header = () => {
             </Button>
           </Link>
         </Grid>
+        {user === "" || user === null ? 
         <Grid item>
           <Link to="/signup">
             <Button variant="contained" color="primary">
               Signup
             </Button>
           </Link>
+        </Grid> : 
+        <Grid item>
+          <Link to="/logout">
+            <Button variant="contained" color="primary">
+              Logout
+            </Button>
+          </Link>
         </Grid>
+        }
+        
+
         <Grid item>
           <Link to="/user">
             <Button variant="contained" color="primary">
@@ -43,20 +56,6 @@ const Header = () => {
           </Link>
         </Grid>
 
-        <Grid item>
-          <Link to="/sync">
-            <Button variant="contained" color="primary">
-              Sync
-            </Button>
-          </Link>
-        </Grid>
-        <Grid item>
-          <Link to="/logout">
-            <Button variant="contained" color="primary">
-              Logout
-            </Button>
-          </Link>
-        </Grid>
       </Grid>
     </div>
   );

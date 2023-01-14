@@ -15,6 +15,8 @@ import {
   updateOrAddHolding,
   updateOrDeleteHolding,
 } from "../features/slices/holdingSlice";
+import { addWatchlistItem } from "../features/slices/watchlistSlice";
+
 import { updateUserBalance } from "../features/slices/userSlice";
 // import HoldingActions from "../renameMe/HoldingActions.HoldingActions";
 
@@ -159,6 +161,23 @@ const Search = () => {
       dispatch(updateOrDeleteHolding(res.data.updatedInfo.holding));
     })
   }
+  const handleAddToWatchlist = (data) => {
+    console.log(data)
+    axios
+    .post('/watchlist/add',{
+      params: {
+        symbol:data
+      },
+    })
+    .then((res)=> {
+      dispatch(
+        addWatchlistItem({
+          symbol: res.data.stock.symbol
+        })
+      )
+    })
+
+  }
 
   return (
     <div>
@@ -174,9 +193,6 @@ const Search = () => {
       </Button>
       <Button onClick={handleSymbolSearch} variant="contained" color="primary">
         Symbol Search
-      </Button>
-      <Button onClick={handlePriceSearch} variant="contained" color="primary">
-        price Search
       </Button>
 
       <br />
@@ -196,6 +212,8 @@ const Search = () => {
               handleSell(data);
             }}
             selectable={false}
+            watchlistable={true}
+            watchlist={(data) => {handleAddToWatchlist(data)}}
           />
         </div>
       ) : (

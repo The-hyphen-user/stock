@@ -9,15 +9,15 @@ const cors = require("cors");
 
 
 //dev cors options
-const corsOptions = {
-  origin: 'http://localhost', credentials: true
-}
+// const corsOptions = {
+//   origin: 'http://localhost', credentials: true
+// }
 
 // docker/nginx cors options
-// const DOCKER_CLIENT_ORIGIN = process.env.CLIENT_ORIGIN
-// const corsOptions = {
-//   origin: DOCKER_CLIENT_ORIGIN || 'http://localhost', credentials: true
-// }
+const DOCKER_CLIENT_ORIGIN = process.env.CLIENT_ORIGIN
+const corsOptions = {
+  origin: [DOCKER_CLIENT_ORIGIN, 'http://localhost:3000', process.env.ORIGIN_ADDRESS1, process.env.ORIGIN_ADDRESS2, process.env.ORIGIN_ADDRESS3 ] , credentials: true
+}
 
 
 const passport = require("passport");

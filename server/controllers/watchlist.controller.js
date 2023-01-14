@@ -2,38 +2,83 @@ const db = require("../models");
 const User = db.User;
 const Watchlist = db.Watchlist;
 
+exports.addOne = (req, res) => {
+  const user = req.user;
+  const symbol = req.query.symbol;
+  //vallidate
+  if (!symbol || !user) {
+    res.status(400).send({
+      message: "Content can not be empty!",
+    });
+    return;
+  }
+  //check to see if the watchlist item already exists
+  Watchlist.findOne({
+    where: { symbol: symbol, userId: user.fulfillmentValue.id },
+  })
+    .then((watchlistItem) => {
+      if (watchlistItem) {
+        res.status(400).send({
+          message: "Watchlist item already exists",
+        });
+        return;
+      }
+      //create a new watchlist item
+      const newWatchlistItem = {
+        symbol: symbol,
+        userId: user.fulfillmentValue.id,
+      };
+      //save watchlist item in the database
+      Watchlist.create(newWatchlistItem)
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: err.message || "Some error occurred while creating the watchlist item.",
+          });
+        });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the watchlist item.",
+      });
+    });
+};
+
+
 
 
 exports.toggleWatchlist = (req, res) => {
   const user = req.user;
   const symbol = req.query.symbol;
   const id = user.fulfillmentValue.id;
-  Watchlist.findOne({where: { userId: id, symbol: symbol }})
-  .then((watchlistStatus) => {
-    if (!watchlistStatus) {
-      Watchlist.create({
-        userId: id,
-        symbol: symbol
-      }).then((newWatchlistItem) => {
-        res.status(200).send({
-          updatedInfo:{
-            symbol: symbol,
-            status: true
-          }
+  Watchlist.findOne({ where: { userId: id, symbol: symbol } })
+    .then((watchlistStatus) => {
+      if (!watchlistStatus) {
+        Watchlist.create({
+          userId: id,
+          symbol: symbol
+        }).then((newWatchlistItem) => {
+          res.status(200).send({
+            updatedInfo: {
+              symbol: symbol,
+              status: true
+            }
+          })
         })
-      })
-    } else {
-      Watchlist.destroy({where: { userId: id, symbol: symbol }})
-      .then((deletedWatchlistItem) => {
-        res.status(200).send({
-          updatedInfo:{
-            symbol: symbol,
-            status: false
-          }
-        })
-      })
-    }
-  })
+      } else {
+        Watchlist.destroy({ where: { userId: id, symbol: symbol } })
+          .then((deletedWatchlistItem) => {
+            res.status(200).send({
+              updatedInfo: {
+                symbol: symbol,
+                status: false
+              }
+            })
+          })
+      }
+    })
 
 
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { TextField, Grid, Card, Paper, Button, Box } from '@material-ui/core';
 
-const Stock = ({ symbol, amount, price, name, id, selectable, select, tradable, buy, sell }) => {
+const Stock = ({ symbol, amount, price, name, id, selectable, select, tradable, buy, sell, watchlistable, watchlist }) => {
   const [tradeQuantity, setTradeQuantity] = useState(0)
   const handleSelect = () => {
     console.log('selected')
@@ -15,11 +15,15 @@ const Stock = ({ symbol, amount, price, name, id, selectable, select, tradable, 
     console.log('sell')
     sell({ symbol, tradeQuantity})
   }
+  const handleWatchlist = () => {
+    console.log('watchlist')
+    watchlist({ symbol})
+  }
   return (
     <Box>
     <Paper elevation={3}
       >
-      <Grid container spacing={4} elevation='4'
+      <Grid container spacing={2} elevation='4'
       >
 
         <Grid item xs={2} variant='contained'>
@@ -75,6 +79,11 @@ const Stock = ({ symbol, amount, price, name, id, selectable, select, tradable, 
                 <Button color='primary' variant='contained' onClick={handleBuy}>buy</Button>
                 <Button color='primary' variant='contained' onClick={handleSell}>sell</Button>
                 </Grid>
+                {watchlistable ? 
+                <Grid item xs={12} style={{ display: "flex", alignItems: "center", justifyContent:'center'}}>
+                  <Button color='primary' variant='contained' onClick={handleWatchlist}>watchlist</Button>
+                  </Grid> 
+                  : <div></div>}
                 </Grid>
                 </div> : <div></div>}
             </div>

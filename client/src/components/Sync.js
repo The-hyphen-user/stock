@@ -24,10 +24,10 @@ const Sync = () => {
     }
   return (
     <div>
-    <button onClick={handleSubmit}>sync</button>
+    <button onClick={handleSubmit}>Major Sync</button>
     <p>{syncStatus}</p>
     <br/>
-    <button onClick={handleSubmit2}>sync2</button>
+    <button onClick={handleSubmit2}>Tiny Test Sync</button>
     <p>{syncStatus2}</p>
 
 
